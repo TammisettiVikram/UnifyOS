@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.api.workspaces import router as workspace_router
-from app.api.operations import router as ops_router
+from app.api.workspaces import router as workspaces_router
+from app.api.operations import router as operations_router
 from app.core.database import init_db
 app = FastAPI()
 
@@ -19,8 +19,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(workspace_router)
-app.include_router(ops_router)
+app.include_router(workspaces_router)
+app.include_router(operations_router)
 
 @app.get("/")
 async def health():
