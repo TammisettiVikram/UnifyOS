@@ -11,7 +11,7 @@ const api = axios.create({
 });
 
 export const workspaceService = {
-    // Remove the leading slash here to avoid //workspaces
+    // Ensure this matches the backend (no slash)
     create: (data) => api.post('/workspaces', data),
     get: (id) => api.get(`/workspaces/${id}`),
     update: (id, data) => api.patch(`/workspaces/${id}`, data),

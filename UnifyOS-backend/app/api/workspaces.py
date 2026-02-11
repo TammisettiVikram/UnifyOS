@@ -6,7 +6,7 @@ from app.schemas.workspace import WorkspaceCreate, WorkspaceUpdate, WorkspaceRes
 
 router = APIRouter(prefix="/workspaces", tags=["Workspaces"])
 
-@router.post("/", response_model=WorkspaceResponse)
+@router.post("", response_model=WorkspaceResponse)
 def create_workspace(workspace: WorkspaceCreate, db: Session = Depends(get_db)):
     db_workspace = Workspace(**workspace.model_dump())
     db.add(db_workspace)
