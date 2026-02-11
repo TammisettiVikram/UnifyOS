@@ -7,7 +7,7 @@ const api = axios.create({
 });
 
 export const workspaceService = {
-    create: (data) => api.post('/workspaces/', data),
+    create: (data) => api.post('/workspaces', data),
     get: (id) => api.get(`/workspaces/${id}`),
     update: (id, data) => api.patch(`/workspaces/${id}`, data),
     activate: (id) => api.post(`/workspaces/${id}/activate`),

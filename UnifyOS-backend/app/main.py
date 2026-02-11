@@ -2,6 +2,8 @@ import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+app = FastAPI()
+
 # Using absolute imports relative to the 'backend' directory
 from app.core.config import settings
 from app.core.database import init_db
@@ -10,13 +12,16 @@ from app.api import workspaces, operations
 # Initialize database tables on start
 init_db()
 
-app = FastAPI(title="CareOps API")
+origins = [
+    "http://localhost:5173",           # Local development
+    "https://unify-os.vercel.app",      # Your specific Vercel production URL
+]
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=origins,             # Use the specific list instead of ["*"]
     allow_credentials=True,
-    allow_methods=["*"],
+    allow_methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     allow_headers=["*"],
 )
 
