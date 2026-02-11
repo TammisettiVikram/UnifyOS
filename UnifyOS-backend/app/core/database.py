@@ -1,7 +1,9 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from app.core.config import settings
-from app.models.workspace import Base
+
+# 1. Import BOTH Bases here so they are registered
+from app.models.workspace import Base as WorkspaceBase
 from app.models.business_logic import Base as BusinessBase
 
 db_url = settings.DATABASE_URL
@@ -19,6 +21,6 @@ def get_db():
         db.close()
 
 def init_db():
-    # This ensures all models are registered before creating tables
-    Base.metadata.create_all(bind=engine)
+    # 2. Use the metadata from the imported models
+    WorkspaceBase.metadata.create_all(bind=engine)
     BusinessBase.metadata.create_all(bind=engine)

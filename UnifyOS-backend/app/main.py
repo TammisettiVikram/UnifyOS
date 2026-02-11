@@ -2,15 +2,21 @@ import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-app = FastAPI()
-
 # Using absolute imports relative to the 'backend' directory
 from app.core.config import settings
 from app.core.database import init_db
 from app.api import workspaces, operations
 
+app = FastAPI()
+
 # Initialize database tables on start
-init_db()
+@app.on_event("startup")
+def on_startup():
+    try:
+        init_db()
+        print("Database initialized successfully")
+    except Exception as e:
+        print(f"Database init failed: {e}")
 
 origins = [
     "http://localhost:5173",           # Local development
