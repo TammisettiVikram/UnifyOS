@@ -1,9 +1,10 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.api.workspaces import router as workspace_router
-from app.api.operations import router as ops_router
+# Use the full module path
+from app.api.workspaces import router as ws_router
+from app.api.operations import router as op_router
 
-app = FastAPI(title="CareOps API")
+app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
@@ -13,8 +14,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(workspace_router)
-app.include_router(ops_router)
+app.include_router(ws_router)
+app.include_router(op_router)
 
 @app.get("/")
 def health():
