@@ -7,8 +7,15 @@ export default {
   theme: {
     extend: {
       colors: {
-        primary: "#0f172a", // Navy Blue for a professional look
-        accent: "#3b82f6",  // CareOps Blue
+        brand: {
+          50: '#f0f9ff',
+          500: '#0ea5e9',
+          900: '#0c4a6e',
+        },
+        dark: {
+          bg: '#020617',
+          card: '#1e293b',
+        }
       },
     },
   },
