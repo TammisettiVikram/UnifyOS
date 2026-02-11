@@ -1,7 +1,5 @@
 from sqlalchemy import Column, Integer, String, Boolean, JSON
-from sqlalchemy.ext.declarative import declarative_base
-
-Base = declarative_base()
+from app.core.database import Base # Use the shared Base
 
 class Workspace(Base):
     __tablename__ = "workspaces"
@@ -10,6 +8,7 @@ class Workspace(Base):
     business_name = Column(String, unique=True, index=True)
     address = Column(String)
     timezone = Column(String, default="UTC")
+    contact_email = Column(String) # Ensure this exists!
     is_active = Column(Boolean, default=False)
     onboarding_step = Column(Integer, default=1)
-    integrations = Column(JSON, default={})  # To store SMS/Email config
+    integrations = Column(JSON, default={})

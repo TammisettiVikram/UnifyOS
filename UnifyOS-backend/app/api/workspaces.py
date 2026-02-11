@@ -6,13 +6,18 @@ from app.schemas.workspace import WorkspaceCreate, WorkspaceUpdate, WorkspaceRes
 
 router = APIRouter(prefix="/workspaces", tags=["Workspaces"])
 
-@router.post("", response_model=WorkspaceResponse)
+@router.post("")
 def create_workspace(workspace: WorkspaceCreate, db: Session = Depends(get_db)):
-    db_workspace = Workspace(**workspace.model_dump())
-    db.add(db_workspace)
-    db.commit()
-    db.refresh(db_workspace)
-    return db_workspace
+    try:
+        db_workspace = Workspace(**workspace.model_dump())
+        db.add(db_workspace)
+        db.commit()
+        db.refresh(db_workspace)
+        return db_workspace
+    except Exception as e:
+        print(f"DATABASE ERROR: {str(e)}") # This will show up in Railway logs
+        db.rollback()
+        raise HTTPException(status_code=500, detail=str(e))
 
 @router.get("/{workspace_id}", response_model=WorkspaceResponse)
 def get_workspace(workspace_id: int, db: Session = Depends(get_db)):
