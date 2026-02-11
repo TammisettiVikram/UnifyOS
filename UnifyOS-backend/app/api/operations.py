@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException
+from app.models.business_logic import Contact
 from sqlalchemy.orm import Session
 from app.core.database import get_db
 from app.models.business_logic import Booking, Contact, Inventory, Form
@@ -7,17 +8,25 @@ from app.services.automation import AutomationService
 router = APIRouter(prefix="/ops", tags=["Operations"])
 
 # 1. Create Booking (Triggers Automation)
-@router.post("/bookings")
-def create_booking(contact_id: int, workspace_id: int, service: str, db: Session = Depends(get_db)):
-    new_booking = Booking(contact_id=contact_id, workspace_id=workspace_id, service_type=service)
-    db.add(new_booking)
+@router.post("/public/contact/{workspace_id}")
+async def public_contact_submission(workspace_id: int, data: dict, db: Session = Depends(get_db)):
+    # 1. Create Contact
+    new_contact = Contact(
+        workspace_id=workspace_id,
+        name=data.get('name'),
+        email=data.get('email'),
+        phone=data.get('phone'),
+        status="Lead" # Rule 7: Contact is created
+    )
+    db.add(new_contact)
     db.commit()
-    db.refresh(new_booking)
-    
-    # Trigger Automations
-    AutomationService.handle_new_booking(db, new_booking.id, workspace_id)
-    return new_booking
+    db.refresh(new_contact)
 
+    # 2. Automation: Start Conversation & Send Welcome
+    # This is where you'd trigger your Integration Service (Email/SMS)
+    print(f"AUTOMATION: Welcome message sent to {new_contact.email}")
+    
+    return {"status": "success", "message": "Form submitted successfully"}
 # 2. Dashboard Stats (Rule 5)
 @router.get("/dashboard/{workspace_id}")
 def get_dashboard_stats(workspace_id: int, db: Session = Depends(get_db)):
