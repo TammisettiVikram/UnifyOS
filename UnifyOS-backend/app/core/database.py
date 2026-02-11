@@ -2,25 +2,14 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from app.core.config import settings
 
-# 1. Import BOTH Bases here so they are registered
-from app.models.workspace import Base as WorkspaceBase
-from app.models.business_logic import Base as BusinessBase
+# Explicitly import models to register metadata
+import app.models.workspace
+import app.models.business_logic
 
-db_url = settings.DATABASE_URL
-if db_url and db_url.startswith("postgres://"):
-    db_url = db_url.replace("postgres://", "postgresql://", 1)
-
-engine = create_engine(db_url)
+engine = create_engine(settings.DATABASE_URL.replace("postgres://", "postgresql://", 1))
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
-
 def init_db():
-    # 2. Use the metadata from the imported models
-    WorkspaceBase.metadata.create_all(bind=engine)
-    BusinessBase.metadata.create_all(bind=engine)
+    # Only creates if they don't exist
+    app.models.workspace.Base.metadata.create_all(bind=engine)
+    app.models.business_logic.Base.metadata.create_all(bind=engine)

@@ -1,16 +1,10 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.api.workspaces import router as workspaces_router
-from app.api.operations import router as operations_router
-from app.core.database import init_db
-app = FastAPI()
+from app.api.workspaces import router as workspace_router
+from app.api.operations import router as ops_router
 
-@app.on_event("startup")
-def startup_event():
-    # Tables already exist based on your Postgres screenshot
-    # This will now just verify the connection
-    init_db()
-    
+app = FastAPI(title="CareOps API")
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -19,9 +13,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(workspaces_router)
-app.include_router(operations_router)
+app.include_router(workspace_router)
+app.include_router(ops_router)
 
 @app.get("/")
-async def health():
+def health():
     return {"status": "ok"}
