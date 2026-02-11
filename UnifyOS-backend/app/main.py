@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.api import workspaces, operations
-# Do NOT call init_db() at the top level here
+from app.api.workspaces import router as workspace_router
+from app.api.operations import router as ops_router
 
 app = FastAPI()
 
@@ -13,9 +13,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(workspaces.router)
-app.include_router(operations.router)
+app.include_router(workspace_router)
+app.include_router(ops_router)
 
 @app.get("/")
-def health():
-    return {"status": "online"}
+async def health():
+    return {"status": "ok", "version": "1.0.0"}
