@@ -1,11 +1,11 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from .config import settings
+from app.core.config import settings
 from app.models.workspace import Base
+from app.models.business_logic import Base as BusinessBase
 
-# Railway provides DATABASE_URL; we ensure it's compatible with SQLAlchemy
 db_url = settings.DATABASE_URL
-if db_url.startswith("postgres://"):
+if db_url and db_url.startswith("postgres://"):
     db_url = db_url.replace("postgres://", "postgresql://", 1)
 
 engine = create_engine(db_url)
@@ -19,5 +19,6 @@ def get_db():
         db.close()
 
 def init_db():
-    # This creates tables on startup if they don't exist
+    # This ensures all models are registered before creating tables
     Base.metadata.create_all(bind=engine)
+    BusinessBase.metadata.create_all(bind=engine)
