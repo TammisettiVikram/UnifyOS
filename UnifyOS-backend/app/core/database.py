@@ -5,7 +5,10 @@ from app.core.base import Base # Import from the new base file
 
 db_url = settings.DATABASE_URL.replace("postgres://", "postgresql://", 1)
 
-engine = create_engine(db_url)
+engine = create_engine(
+    db_url.replace("postgresql://", "postgresql+psycopg://"),
+    # This ensures it uses version 3
+)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 def get_db():
